@@ -6,30 +6,36 @@ const app = express()
 import morgan from 'morgan'
 import mongoose from 'mongoose'
 
-// routers
+// Importing routers
 import jobRouter from './routes/jobRouter.js'
 
+// Enable logging in development mode
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
-app.use(express.json())
+app.use(express.json()) // Parse incoming JSON requests
 
+// Default route to check server status
 app.get('/', (req, res) => {
-  res.send('Hello World')
+  res.send('Hello greatest programmer alive')
 })
 
+// Test route to confirm request parssed body
 app.post('/', (req, res) => {
   console.log(req)
   res.json({ message: 'data received', data: req.body })
 })
 
+// Mounting jobRouter router
 app.use('/api/v1/jobs', jobRouter)
 
+// Catch-all for undefined routes
 app.use('*', (req, res) => {
   res.status(404).json({ msg: 'not found' })
 })
 
+// Express error handling middleware
 app.use((err, req, res, next) => {
   console.log(err)
   res.status(500).json({ msg: 'something went wrong' })
@@ -37,6 +43,7 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 5000
 
+// Connect to MongoDB and start the server
 try {
   await mongoose.connect(process.env.MONGO_URL)
   app.listen(port, () => {

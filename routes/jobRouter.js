@@ -8,6 +8,7 @@ import {
   deleteJob,
 } from '../controllers/jobController.js'
 
+//  Routes for job management operations
 router.route('/').get(getAllJobs).post(createJob)
 router.route('/:id').get(getJob).patch(updateJob).delete(deleteJob)
 
