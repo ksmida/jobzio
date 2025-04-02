@@ -5,9 +5,13 @@ import express from 'express'
 const app = express()
 import morgan from 'morgan'
 import mongoose from 'mongoose'
+import { body, validationResult } from 'express-validator'
 
 // Importing routers
 import jobRouter from './routes/jobRouter.js'
+
+// Middleware
+import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js'
 
 // Enable logging in development mode
 if (process.env.NODE_ENV === 'development') {
@@ -21,12 +25,6 @@ app.get('/', (req, res) => {
   res.send('Hello greatest programmer alive')
 })
 
-// Test route to confirm request parssed body
-app.post('/', (req, res) => {
-  console.log(req)
-  res.json({ message: 'data received', data: req.body })
-})
-
 // Mounting jobRouter router
 app.use('/api/v1/jobs', jobRouter)
 
@@ -36,10 +34,7 @@ app.use('*', (req, res) => {
 })
 
 // Express error handling middleware
-app.use((err, req, res, next) => {
-  console.log(err)
-  res.status(500).json({ msg: 'something went wrong' })
-})
+app.use(errorHandlerMiddleware)
 
 const port = process.env.PORT || 5000
 
