@@ -15,16 +15,13 @@ export const createJob = async (req, res) => {
 
 // Fetch a single job by ID
 export const getJob = async (req, res) => {
-  const { id } = req.params
-
-  const job = await Job.findById(id)
+  const job = await Job.findById(req.params.id)
   res.status(StatusCodes.OK).json({ job })
 }
 
 // Update a job by ID
 export const updateJob = async (req, res) => {
-  const { id } = req.params
-  const updatedJob = await Job.findOneAndUpdate(id, req.body, {
+  const updatedJob = await Job.findOneAndUpdate(req.params.id, req.body, {
     new: true,
   })
 
@@ -33,8 +30,6 @@ export const updateJob = async (req, res) => {
 
 // Delete a job by ID
 export const deleteJob = async (req, res) => {
-  const { id } = req.params
-  const removeJob = await Job.findByIdAndDelete(id)
-
+  const removeJob = await Job.findByIdAndDelete(req.params.id)
   res.status(StatusCodes.OK).json({ msg: 'job deleted', job: removeJob })
 }
