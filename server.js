@@ -9,6 +9,7 @@ import { body, validationResult } from 'express-validator'
 
 // Importing routers
 import jobRouter from './routes/jobRouter.js'
+import authRouter from './routes/authRouter.js'
 
 // Middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js'
@@ -27,6 +28,9 @@ app.get('/', (req, res) => {
 
 // Mounting jobRouter router
 app.use('/api/v1/jobs', jobRouter)
+
+// Mounting authRouter router
+app.use('/api/v1/auth', authRouter)
 
 // Catch-all for undefined routes
 app.use('*', (req, res) => {
