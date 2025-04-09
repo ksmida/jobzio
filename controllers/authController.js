@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import User from '../models/UserModel.js'
 import { comparePassword, hashPassword } from '../utils/passwordUtils.js'
 import { UnauthenticatedError } from '../errors/customErrors.js'
+import { createJWT } from '../utils/tokenUtils.js'
 
 // Register a user. First user's role is always an admin.
 export const register = async (req, res) => {
@@ -24,5 +25,8 @@ export const login = async (req, res) => {
     user.password
   )
   if (!isPasswordCorrect) throw new UnauthenticatedError('invalid credentials')
-  res.send('login')
+
+  const token = createJWT({ userId: user._id, role: user.role })
+
+  res.send({ token })
 }
