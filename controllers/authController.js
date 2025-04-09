@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import User from '../models/UserModel.js'
-import { hashPassword } from '../utils/passwordUtils.js'
+import { comparePassword, hashPassword } from '../utils/passwordUtils.js'
+import { UnauthenticatedError } from '../errors/customErrors.js'
 
 // Register a user. First user's role is always an admin.
 export const register = async (req, res) => {
@@ -16,5 +17,12 @@ export const register = async (req, res) => {
 
 // Login
 export const login = async (req, res) => {
+  const user = await User.findOne({ email: req.body.email })
+  if (!user) throw new UnauthenticatedError('invalid credentials')
+  const isPasswordCorrect = await comparePassword(
+    req.body.password,
+    user.password
+  )
+  if (!isPasswordCorrect) throw new UnauthenticatedError('invalid credentials')
   res.send('login')
 }
