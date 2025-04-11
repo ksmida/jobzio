@@ -5,7 +5,7 @@ import express from 'express'
 const app = express()
 import morgan from 'morgan'
 import mongoose from 'mongoose'
-import { body, validationResult } from 'express-validator'
+import cookieParser from 'cookie-parser'
 
 // Importing routers
 import jobRouter from './routes/jobRouter.js'
@@ -13,13 +13,18 @@ import authRouter from './routes/authRouter.js'
 
 // Middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js'
+import { authenticateUser } from './middleware/authMiddleware.js'
 
 // Enable logging in development mode
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
-app.use(express.json()) // Parse incoming JSON requests
+// Parse cookies
+app.use(cookieParser())
+
+// Parse incoming JSON requests
+app.use(express.json())
 
 // Default route to check server status
 app.get('/', (req, res) => {
@@ -27,7 +32,7 @@ app.get('/', (req, res) => {
 })
 
 // Mounting jobRouter router
-app.use('/api/v1/jobs', jobRouter)
+app.use('/api/v1/jobs', authenticateUser, jobRouter)
 
 // Mounting authRouter router
 app.use('/api/v1/auth', authRouter)
