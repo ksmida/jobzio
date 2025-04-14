@@ -19,4 +19,12 @@ const UserSchema = new mongoose.Schema({
   },
 })
 
+// Removes 'password' field from 'User' document when it is converted to JSON
+UserSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    delete ret.password
+    return ret
+  },
+})
+
 export default mongoose.model('User', UserSchema)
