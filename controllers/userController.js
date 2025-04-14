@@ -15,5 +15,6 @@ export const getApplicationStats = async (req, res) => {
 
 // Changes user's account information
 export const updateUser = async (req, res) => {
+  const updatedUser = await User.findByIdAndUpdate(req.user.userId, req.body)
   res.status(StatusCodes.OK).json({ msg: 'update user' })
 }
