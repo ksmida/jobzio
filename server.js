@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 // Importing routers
 import jobRouter from './routes/jobRouter.js'
 import authRouter from './routes/authRouter.js'
+import userRouter from './routes/userRouter.js'
 
 // Middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js'
@@ -33,6 +34,9 @@ app.get('/', (req, res) => {
 
 // Mounting jobRouter router
 app.use('/api/v1/jobs', authenticateUser, jobRouter)
+
+// Mounting userRouter router
+app.use('/api/v1/users', authenticateUser, userRouter)
 
 // Mounting authRouter router
 app.use('/api/v1/auth', authRouter)
