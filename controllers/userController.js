@@ -10,7 +10,9 @@ export const getCurrentUser = async (req, res) => {
 
 // Retrieves job application statistics for the logged in user
 export const getApplicationStats = async (req, res) => {
-  res.status(StatusCodes.OK).json({ msg: 'application stats' })
+  const users = await User.countDocuments()
+  const jobs = await Job.countDocuments()
+  res.status(StatusCodes.OK).json({ users, jobs })
 }
 
 // Changes user's account information
