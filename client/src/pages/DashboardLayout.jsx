@@ -1,16 +1,28 @@
-import React, { createContext, useState } from 'react'
-import { useContext } from 'react'
-import { Outlet } from 'react-router-dom' // Handles nested routes
+import React, { createContext, useContext, useState } from 'react'
+import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom'
 import Wrapper from '../assets/wrappers/Dashboard'
 import { BigSidebar, Navbar, SmallSidebar } from '../components'
 import { checkDefaultTheme } from '../App'
+import customFetch from '../utils/customFetch'
+import { toast } from 'react-toastify'
+
+export const loader = async () => {
+  try {
+    const { data } = await customFetch.get('/users/current-user')
+    return data
+  } catch (error) {
+    return redirect('/')
+  }
+}
 
 // Create context for managing dashboard state
 const DashboardContext = createContext()
 
+// Obtaining logged in user from loader
 const DashboardLayout = () => {
-  // Temprary user data
-  const user = { name: 'john' }
+  const { user } = useLoaderData()
+
+  const navigate = useNavigate()
 
   // State for sidebar visibility
   const [showSidebar, setShowSidebar] = useState(false)
@@ -31,9 +43,11 @@ const DashboardLayout = () => {
     setShowSidebar(!showSidebar)
   }
 
-  // Function to handle user logout
+  // Function to handle user logout. Ensures cookies are cleared.
   const logoutUser = async () => {
-    console.log('logout user')
+    navigate('/')
+    await customFetch.get('/auth/logout')
+    toast.success('Logging out...')
   }
 
   return (
@@ -60,7 +74,7 @@ const DashboardLayout = () => {
 
             {/* Main content area where nested routes are rendered*/}
             <div className='dashboard-page'>
-              <Outlet />
+              <Outlet context={{ user }} />
             </div>
           </div>
         </main>
